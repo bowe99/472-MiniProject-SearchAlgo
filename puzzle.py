@@ -3,7 +3,7 @@ from node import Move, Node
 
 
 goal_node = Node(None, -1, ['1', '2', '3', '8', 'B', '4', '7', '6', '5'])
-test_node = Node(None, 1, ['B', '1', '3', '8', '2', '4', '7', '6', '5'])
+test_node = Node(None, 1, ['B', '1', '2', '8', '4', '3', '7', '6', '5'])
 
 open = list()
 closed = list()
@@ -119,7 +119,17 @@ def bfs():
             children = generate_children(current_node)
             closed.append(current_node)
             for child in children:
-                if child not in closed and child not in open:
+                is_open = False
+                is_closed = False
+                for open_node in open:
+                    if open_node.state == child.state:
+                        is_open = True
+                        break
+                for close_node in closed:
+                    if close_node.state == child.state:
+                        is_closed = True
+                        break
+                if not is_closed and not is_open:
                     open.append(child)
         print("Open: " + str(open))
         print("Closed: " + str(closed))
@@ -134,7 +144,9 @@ def a_star():
 
 if __name__ =='__main__' :
     open.append(test_node)
-    solution = dfs()
+    solution = bfs()
+
+    display_board(solution.state)
 
     test = [Node(None, 1, [['B', '1', '3', '8', '2', '4', '7', '6', '5']])]
 
