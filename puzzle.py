@@ -4,7 +4,7 @@ from node import Move, Node
 
 goal_node = Node(None, -1, ['1', '2', '3', '8', 'B', '4', '7', '6', '5'])
 # goal_node = Node(None, -1, ['1', '2', '3', '4', '5', '6', '7', '8', 'B'])
-test_node = Node(None, 1, ['B', '1', '2', '7', '8', '3', '6', '5', '4'])
+test_node = Node(None, 1, ['1', '2', '3', 'B', '8', '4', '7', '6', '5'])
 
 open = list()
 closed = list()
@@ -142,9 +142,9 @@ def nilsson(current_node):
             # In Center
             heuristic += 3
         else:
-            clockwise_next_index = (index_clockwise.index(current_index) + 1) % len(index_clockwise)
+            clockwise_next_index = index_clockwise[(index_clockwise.index(current_index) + 1) % len(index_clockwise)]
             clockwise_value = current_node.state[clockwise_next_index]
-            if clockwise_value != goal_node.state[clockwise_next_index] and clockwise_value != 'B':
+            if clockwise_value != goal_node.state[clockwise_next_index]:
                 heuristic += 6
         current_index += 1
 
