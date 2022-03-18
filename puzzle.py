@@ -3,7 +3,6 @@ from node import Move, Node
 
 
 goal_node = Node(None, -1, ['1', '2', '3', '8', 'B', '4', '7', '6', '5'])
-# goal_node = Node(None, -1, ['1', '2', '3', '4', '5', '6', '7', '8', 'B'])
 test_node = Node(None, 1, ['1', '2', '3', 'B', '8', '4', '7', '6', '5'])
 
 open = list()
@@ -105,7 +104,6 @@ def manhattan(current_node):
         col_difference = abs((current_index % 3) - (goal_index % 3))
         heuristic += (row_difference + col_difference)
         current_index += 1
-    print(heuristic)
     current_node.heuristic = heuristic
 
 def permutation_inversion(current_node):
@@ -127,10 +125,10 @@ def permutation_inversion(current_node):
         current_index += 1
     current_node.heuristic = heuristic
 
+# Inadmissable Heuristic
 def nilsson(current_node):
     # Set heuristic to manhattan value and then add nilsson sequence
     manhattan(current_node)
-    print(current_node.heuristic)
     current_index = 0
     heuristic = 0
     index_clockwise = [0, 1, 2, 5, 8, 7, 6, 3]
@@ -153,7 +151,7 @@ def nilsson(current_node):
 
 # Search Algorithms 
 def dfs():
-    path_length = 0
+    path_length = 1
     while(len(open) > 0):
         current_node = open.pop(0)
         if goal_state_achieved(current_node.state):
@@ -184,7 +182,7 @@ def dfs():
     return False
 
 def bfs():
-    path_length = 0
+    path_length = 1
     while(len(open) > 0):
         current_node = open.pop(0)
         if goal_state_achieved(current_node.state):
@@ -253,18 +251,14 @@ def best(heuristic):
     print("Goal State not possible")
     return False
 
-def a_star(heuristic, optimal = False):
+def a_star(heuristic):
     path_length = 0
     while(len(open) > 0):
         current_node = open.pop(0)
         if goal_state_achieved(current_node.state):
-            if(not optimal):
-                print("Goal State Achieved")
-                print('=======================')
-                print('Path Length: ' + str(path_length))
-            else:
-                print('Optimal Path Length (A* with Manhattan Heuristic): ' + str(path_length))
-                print('=======================')
+            print("Goal State Achieved")
+            print('=======================')
+            print('Path Length: ' + str(path_length))
             open.clear()
             closed.clear()
             return current_node
@@ -296,55 +290,83 @@ def a_star(heuristic, optimal = False):
     print("Goal State not possible")
     return False
 
+
+def get_solution_path(node):
+    solution_states = list()
+    while node is not None:
+        solution_states.insert(0, node.state)
+        node = node.parent
+    return solution_states
+
+
 if __name__ =='__main__' :
-    nilsson(test_node)
-    print(test_node.heuristic)
-    # search = input('Enter Search Name (bfs, dfs, best, a_star): ')
-    # while search not in ['bfs', 'dfs', 'best', 'a_star']:
-    #     print('Function Does Not Exist')
-    #     search = input('Enter Search Name (bfs, dfs, best, a_star): ')
+    search = input('Enter Search Name (bfs, dfs, best, a_star, all): ')
+    while search not in ['bfs', 'dfs', 'best', 'a_star', 'all']:
+        print('Function Does Not Exist')
+        search = input('Enter Search Name (bfs, dfs, best, a_star): ')
     
-    # if search in ['best', 'a_star']:
-    #     user_heuristic = input('Enter Heuristic Name (manhattan, hamming, permutation_inversion): ')
-    #     while user_heuristic not in ['manhattan', 'hamming', 'permutation_inversion']:
-    #         print('Function Does Not Exist')
-    #         user_heuristic = input('Enter Heuristic Name (manhattan, hamming, permutation_inversion): ')
-    # confirmed = False
-    # while(not confirmed):
-    #     print('Enter in following order the state of the initial puzzle: ')
-    #     print('1 2 3')
-    #     print('4 5 6')
-    #     print('7 8 B')
-    #     test_state = ['X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X']
-    #     count = 0
-    #     while count < 9:
-    #         print('Current Board: ')
-    #         display_board(test_state)
-    #         num = str(input('Enter number or B at index(' + str(count) + '): '))
-    #         while num not in ['1', '2', '3', '4', '5', '6', '7', '8', 'B'] or num in test_state:
-    #             print('Input already in puzzle or not a valid input')
-    #             print('Current Board: ')
-    #             display_board(test_state)
-    #             num = str(input('Enter number or B at index(' + str(count) + '): '))
-    #         test_state[count] = num
-    #         count += 1
+    if search in ['best', 'a_star']:
+        user_heuristic = input('Enter Heuristic Name (manhattan, hamming, permutation_inversion, nilsson): ')
+        while user_heuristic not in ['manhattan', 'hamming', 'permutation_inversion', 'nilsson']:
+            print('Function Does Not Exist')
+            user_heuristic = input('Enter Heuristic Name (manhattan, hamming, permutation_inversion, nilsson): ')
+    confirmed = False
+    while(not confirmed):
+        print('Enter in following order the state of the initial puzzle: ')
+        print('1 2 3')
+        print('4 5 6')
+        print('7 8 B')
+        test_state = ['X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X']
+        count = 0
+        while count < 9:
+            print('Current Board: ')
+            display_board(test_state)
+            num = str(input('Enter number or B at index(' + str(count) + '): '))
+            while num not in ['1', '2', '3', '4', '5', '6', '7', '8', 'B'] or num in test_state:
+                print('Input already in puzzle or not a valid input')
+                print('Current Board: ')
+                display_board(test_state)
+                num = str(input('Enter number or B at index(' + str(count) + '): '))
+            test_state[count] = num
+            count += 1
         
-    #     print('Current Board: ')
-    #     display_board(test_state)
-    #     confirm = input('Confirm (y, n): ')
-    #     if confirm == 'y':
-    #         confirmed = True
+        print('Current Board: ')
+        display_board(test_state)
+        confirm = input('Confirm (y, n): ')
+        if confirm == 'y':
+            confirmed = True
 
-    # open.append(Node(None, 0, test_state))
+    if search == 'all':
+        search = ['best', 'a_star']
+        heuristics = ['manhattan', 'hamming', 'permutation_inversion', 'nilsson']
+        for s in search:
+            for h in heuristics:
+                print(s + ' - ' + h)
+                open.append(Node(None, 0, test_state))
+                solution = locals()[s](locals()[h])
+                if solution:
+                    solution_state_list = get_solution_path(solution)
+                    print("Optimal Path: " + str(len(solution_state_list) - 1))
+                    print('=======================')
+                    print(solution_state_list)
+                    
+    elif search in ['best', 'a_star']:
+        open.append(Node(None, 0, test_state))
+        solution = locals()[search](locals()[user_heuristic])
+        if solution:
+            solution_state_list = get_solution_path(solution)
+            print("Optimal Path: " + str(len(solution_state_list)-1))
+            print('=======================')
+            print(solution_state_list)
+    else:
+        open.append(Node(None, 0, test_state))
+        solution = locals()[search]()
+        if solution:
+            solution_state_list = get_solution_path(solution)
+            print("Optimal Path: " + str(len(solution_state_list)-1))
+            print('=======================')
+            print(solution_state_list)
 
-    # if search in ['best', 'a_star']:
-    #     solution = locals()[search](locals()[user_heuristic])
-    # else:
-    #     solution = locals()[search]()
-
-    # if solution:
-    #     open.append(test_node)
-    #     optimal = a_star(manhattan, True)
-    #     display_board(solution.state)
+    
 
     
